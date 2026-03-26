@@ -61,13 +61,17 @@ def get_player_stats_tool(player_id: int):
     return get_player_stats(player_id)
 
 @tool
-def get_player_full_scout_data_tool(player_id: int):
+def get_player_full_scout_data_tool(player_id: int, season_year: str = "25/26"):
     """
     Получает ПОЛНУЮ информацию об игроке: возраст, стоимость, позицию И все 
     статистические метрики сезона (голы, xG, ассисты, точность пасов, кроссы, ошибки, блоки, дриблинг).
     Используй это для глубокого анализа соответствия игрока запросу.
+    Аргументы:
+    - player_id: уникальный ID игрока.
+    - season_year: год сезона в формате 'YY/YY' (например, '24/25', '23/24'). 
+      ВАЖНО: Если пользователь не указал конкретный сезон в запросе, ВСЕГДА используй значение по умолчанию '25/26'.
     """
-    return get_full_player_scout_data(player_id)
+    return get_full_player_scout_data(player_id, season_year=season_year)
 
 @tool
 def search_team_id_tool(query: str):
@@ -101,9 +105,18 @@ structured_llm = llm.with_structured_output(PlayerReport)
 system_instruction = f"""
 ### РОЛЬ
 Ты — ведущий элитный AI-скаут системы TalentLens-AI. 
-Твоя цель: анализировать запросы любой сложности — от поиска конкретного игрока до подбора кандидатов по критериям. Ты превращаешь сырые данные API в глубокую спортивную аналитику.
+Твоя специализация: анализировать запросы любой сложности — от поиска конкретного игрока до подбора кандидатов по критериям. Ты превращаешь сырые данные API в глубокую спортивную аналитику.
 
-### ИНСТРУКЦИЯ ПО РАБОТЕ С ИНСТРУМЕНТАМИ
+---
+
+
+### КОНТЕКСТ
+Сейчас идет активная фаза трансферного окна. Твои отчеты являются базой для принятия многомиллионных инвестиционных решений. Твой отчет должен учитывать актуальную рыночную стоимость игрока и его готовность к переходу или игре в хорошей команде в целом. Ты работаешь с сырыми данными API в режиме реального времени.
+
+---
+
+
+### АЛГОРИТМ ОБРАБОТКИ ЗАПРОСА
 1. **Поиск по клубу/лиге:** Если пользователь ищет игрока в конкретной команде (например, "найди защитника из Барселоны"), СНАЧАЛА используй `search_team_id_tool`, чтобы получить ID клуба. Затем используй `get_team_player_stats_tool`, чтобы увидеть весь состав и их базовые метрики.
 2. **Поиск по характеристикам:** Если пользователь ищет по критериям (например, "правый вингер из Ла Лиги"), и клуб не указан:
    - На основе своих знаний выдели 3-5 наиболее подходящих кандидатов.
@@ -111,15 +124,20 @@ system_instruction = f"""
 3. **Фильтрация и выбор:** Если ты получил список игроков команды через `get_team_player_stats_tool`, отфильтруй их по позиции, возрасту или национальности прямо в уме. Выбери 1-2 самых сильных кандидата, подходящих под запрос.
 4. **Глубокий анализ:** Для финального кандидата (или нескольких) ОБЯЗАТЕЛЬНО вызови `get_player_full_scout_data_tool`. Это твой главный источник данных для отчета.
 5. **Исключение дублей:** Если ты уже получил данные через `get_player_full_scout_data_tool`, не вызывай `get_player_stats_tool` повторно.
+---
 
-### ЗАДАЧА АНАЛИТИКИ
-- **Семантический анализ:** Оцени не только средний балл (recent_form_avg), но и динамику (даты матчей), уровень турниров и стабильность против сильных соперников.
-- **Травматичность:** Если в данных есть пропуски между датами матчей, отрази это как возможный риск. Если ты уже получил данные через get_player_full_scout_data_tool, не вызывай get_player_stats_tool повторно, если в этом нет крайней необходимости
-- **Вердикт:** Дай четкий ответ — "Рассмотреть для подписания" или "Больше не рассматривать".
-- **Рекомендации:** Напиши подробный отчет с заголовками и списками, используя данные о конкретных датах и турнирах.
+### ЦЕЛЬ
+Помогать в скаутинге футболистов, предоставляя аналитические отчеты на основе данных из инструментов.
 
-### ДОП НАСТРОЙКА
-Пиши отчет структурировано, используя заголовки и списки.
+---
+
+### ИНСТРУКЦИИ
+1. ПЕРВИЧНЫЙ ПОИСК: Всегда начинай с поиска уникального идентификатора (ID) игрока или команды, используя соответствующие инструменты поиска.
+2. СБОР ДАННЫХ: После получения ID используй его для вызова инструментов расширенной статистики или составов команд. Никогда не выдумывай статистику, используй только данные из ответов инструментов.
+3. АНАЛИЗ: На основе полученных цифр выдели ключевые показатели, соответствующие запросу пользователя (например, защитные действия, голы или общая форма).
+4. ОТЧЕТ: Сформируй краткий структурированный ответ, включающий конкретные цифры и итоговый аналитический вывод.
+
+---
 
 ### ФОРМАТ ВЫХОДА
 Твой финальный ответ ДОЛЖЕН быть строго в формате JSON, соответствующем схеме:
@@ -140,7 +158,7 @@ agent = create_agent(
     
 import logging
 import time
-
+from langchain_core.outputs import LLMResult
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s | %(levelname)s | %(message)s',
@@ -155,16 +173,38 @@ class ScoutPerformanceTracker(BaseCallbackHandler):
     def __init__(self, warning_threshold: int = 4):
         self.llm_calls = 0
         self.start_time = 0
+        self.call_start_time = 0
         self.warning_threshold = warning_threshold
 
     def on_llm_start(self, serialized, prompts, **kwargs):
         self.llm_calls += 1
-        logger.info(f"[Запрос #{self.llm_calls}] Отправка промпта в OpenRouter...")
+        self.call_start_time = time.perf_counter()
+        logger.info(f"\n [LLM Call #{self.llm_calls}]")
+        logger.info(f"Отправка промпта...")
+    
+    def on_llm_end(self, response: LLMResult, **kwargs):
+        latency = time.perf_counter() - self.call_start_time
+        usage = response.llm_output.get("token_usage", {}) if response.llm_output else {}
+        prompt_tokens = usage.get("prompt_tokens", 0)
+        completion_tokens = usage.get("completion_tokens", 0)
+        total_tokens = usage.get("total_tokens", 0)
+        logger.info(f"Latency: {latency:.2f} sec")
+        logger.info(f"Tokens: In: {prompt_tokens} | Out: {completion_tokens} | Total: {total_tokens}")
+
 
     def on_tool_start(self, serialized, input_str, **kwargs):
         logger.info(f"[Tool] Агент решил вызвать инструмент. Вход: {input_str}")
 
+    def on_tool_end(self, output: str, **kwargs):
+        
+        logger.info("-" * 30)
+        logger.info(f"[Tool Output] Инструмент вернул данные:")
+        logger.info(output) 
+        logger.info("-" * 30)
+
     def reset(self):
         self.llm_calls = 0
         self.start_time = time.time()
+
+performance_tracker = ScoutPerformanceTracker()
 

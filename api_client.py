@@ -142,7 +142,19 @@ def get_player_detailed_info(player_id: int):
             return None
         
 
-def get_full_player_scout_data(player_id: int):
+def normalize_season(season_str: str) -> str:
+  
+    if not season_str or '/' not in season_str:
+        return season_str
+    
+    parts = season_str.split('/')
+    
+    start_year = parts[0].strip()[-2:]
+    end_year = parts[1].strip()[-2:]
+    
+    return f"{start_year}/{end_year}"
+
+def get_full_player_scout_data(player_id: int, season_year: str = "25/26"):
 
     details = get_player_detailed_info(player_id)
     if not details:
@@ -166,53 +178,55 @@ def get_full_player_scout_data(player_id: int):
         seasons_data = data.get('seasons', [])
         all_stats_report = []
 
-        for season_item in seasons_data:
-            if season_item.get('year') != "25/26":
-                continue
+        for item in seasons_data:
+            current_year_raw = item.get('year', '')
+            current_year = normalize_season(str(current_year_raw))
+            target_year = normalize_season(str(season_year))
+            if current_year == target_year:
                 
-            st = season_item.get('statistics', {})
-            tournament = season_item.get('uniqueTournament', {}).get('name', 'Unknown')
+                st = item.get('statistics', {})
+                tournament = item.get('uniqueTournament', {}).get('name', 'Unknown')
+                
             
-            
-            full_stats = {
-                "tournament": tournament,
-                "appearances": st.get('appearances'),
-                "minutesPlayed": st.get('minutesPlayed'),
-                "rating": st.get('rating'),
-                "goals": st.get('goals'),
-                "assists": st.get('assists'),
-                "goalsAssistsSum": st.get('goalsAssistsSum'),
-                "expectedGoals": round(st.get('expectedGoals', 0), 2),
-                "expectedAssists": round(st.get('expectedAssists', 0), 2),
-                "shotsOnTarget": st.get('shotsOnTarget'),
-                "totalShots": st.get('totalShots'),
-                "shotsFromInsideTheBox": st.get('shotsFromInsideTheBox'),
-                "bigChancesCreated": st.get('bigChancesCreated'),
-                "bigChancesMissed": st.get('bigChancesMissed'),
-                "keyPasses": st.get('keyPasses'),
-                "passToAssist": st.get('passToAssist'),
-                "accuratePasses": st.get('accuratePasses'),
-                "totalPasses": st.get('totalPasses'),
-                "accuratePassesPercentage": st.get('accuratePassesPercentage'),
-                "accurateCrosses": st.get('accurateCrosses'),
-                "totalCross": st.get('totalCross'),
-                "accurateCrossesPercentage": st.get('accurateCrossesPercentage'),
-                "accurateLongBalls": st.get('accurateLongBalls'),
-                "totalLongBalls": st.get('totalLongBalls'),
-                "accurateLongBallsPercentage": st.get('accurateLongBallsPercentage'),
-                "successfulDribbles": st.get('successfulDribbles'),
-                "tackles": st.get('tackles'),
-                "interceptions": st.get('interceptions'),
-                "blockedShots": st.get('blockedShots'),
-                "dribbledPast": st.get('dribbledPast'),
-                "cleanSheet": st.get('cleanSheet'),
-                "goalsConceded": st.get('goalsConceded'),
-                "errorLeadToGoal": st.get('errorLeadToGoal'),
-                "yellowCards": st.get('yellowCards'),
-                "redCards": st.get('redCards'),
-                "saves": st.get('saves')
+                full_stats = {
+                    "tournament": tournament,
+                    "appearances": st.get('appearances'),
+                    "minutesPlayed": st.get('minutesPlayed'),
+                    "rating": st.get('rating'),
+                    "goals": st.get('goals'),
+                    "assists": st.get('assists'),
+                    "goalsAssistsSum": st.get('goalsAssistsSum'),
+                    "expectedGoals": round(st.get('expectedGoals', 0), 2),
+                    "expectedAssists": round(st.get('expectedAssists', 0), 2),
+                    "shotsOnTarget": st.get('shotsOnTarget'),
+                    "totalShots": st.get('totalShots'),
+                    "shotsFromInsideTheBox": st.get('shotsFromInsideTheBox'),
+                    "bigChancesCreated": st.get('bigChancesCreated'),
+                    "bigChancesMissed": st.get('bigChancesMissed'),
+                    "keyPasses": st.get('keyPasses'),
+                    "passToAssist": st.get('passToAssist'),
+                    "accuratePasses": st.get('accuratePasses'),
+                    "totalPasses": st.get('totalPasses'),
+                    "accuratePassesPercentage": st.get('accuratePassesPercentage'),
+                    "accurateCrosses": st.get('accurateCrosses'),
+                    "totalCross": st.get('totalCross'),
+                    "accurateCrossesPercentage": st.get('accurateCrossesPercentage'),
+                    "accurateLongBalls": st.get('accurateLongBalls'),
+                    "totalLongBalls": st.get('totalLongBalls'),
+                    "accurateLongBallsPercentage": st.get('accurateLongBallsPercentage'),
+                    "successfulDribbles": st.get('successfulDribbles'),
+                    "tackles": st.get('tackles'),
+                    "interceptions": st.get('interceptions'),
+                    "blockedShots": st.get('blockedShots'),
+                    "dribbledPast": st.get('dribbledPast'),
+                    "cleanSheet": st.get('cleanSheet'),
+                    "goalsConceded": st.get('goalsConceded'),
+                    "errorLeadToGoal": st.get('errorLeadToGoal'),
+                    "yellowCards": st.get('yellowCards'),
+                    "redCards": st.get('redCards'),
+                    "saves": st.get('saves')
             }
-            all_stats_report.append(full_stats)
+                all_stats_report.append(full_stats)
 
         return {
             "profile": details,
