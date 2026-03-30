@@ -14,6 +14,30 @@ from langgraph.checkpoint.memory import InMemorySaver
 load_dotenv()
 checkpointer = InMemorySaver()
 
+class PlayerReasoning(BaseModel):
+    needed_stats: str = Field(
+        description="Извлеки из API конкретные статистические цифры, учитывая позицию игрока и запрос пользователя. Пиши только факты. Формируй мысль коротко, не более 3 предложений."
+    )
+    stats_comparison: str = Field(
+        description="Сравни полученные данные с средними цифрами по лиге/турниру. Используй термины 'выше/лучше/эффективнее' или 'ниже/хуже/менее эффективно' для вердикта. Формируй мысль коротко, не более 3 предложений." 
+    )
+    tactical_fit: str = Field(
+        description="Объясни как выделенная статистика и приведенный анализ закрывает запрос пользователя. Формируй мысль коротко, не более 3 предложений."
+    )
+    is_valid: bool = Field(
+        description="Итоговое решение. True если tats_comparison и tactical_fit валидные."
+    )
+class ProjectReasoning(BaseModel):
+    requirements_check: str = Field(
+        description="Краткое подтверждения соответствия найденных кандидатов исходному запросу. Формируй мысль коротко, не более 3 предложений."
+    )
+    comparative_analysis: str = Field(
+        description="Прямое сравнение ключевых метрик кандидатов относительно позиции или запроса пользователя. Формируй мысль коротко, не более 3 предложений."
+    )
+    selection_justification: str = Field(
+        description="Аргументация выбора победителя. Почему Кандидат А лучше Кандидата Б в данном контексте? Формируй мысль коротко, не более 3 предложений."
+    )
+
 class MatchDetail(BaseModel):
     date: str = Field(
         validation_alias=AliasChoices('date', 'timestamp', 'startTimestamp'), 
@@ -22,11 +46,15 @@ class MatchDetail(BaseModel):
     rating: float = Field(description="Оценка игрока за матч")
     tournament: Optional[str] = Field(default="Unknown Tournament", description="Название турнира")
 class PlayerReport(BaseModel):
+    reasoning: PlayerReasoning = Field(
+        description="Внутренний процесс анализа игрока перед заполнением отчета."
+    )
     player_id: int = Field(description="ID игрока из системы")
     name: str = Field(description="Полное имя игрока")
+
     age: Optional[int] = Field(default=None, description="Возраст игрока")
     market_value: Optional[int] = Field(default=None, description="Стоимость игрока на рынке")
-    position_detailed: Optional[str] = Field(default="N/A", description="Позиция/позиции игрока на поле")
+    position_detailed: Optional[str] = Field(default=None, description="Позиция/позиции игрока на поле")
     
     season_stats_summary: List[Dict[str, Any]] = Field(
         default_factory=list,
@@ -41,6 +69,9 @@ class PlayerReport(BaseModel):
     recommendation: str = Field(description="Полный текстовый отчет")
 class ScoutProjectReport(BaseModel):
     user_request_context: str = Field(description="Краткое описание задачи пользователя")
+    project_reasoning: ProjectReasoning = Field(
+        description="Пошаговый процесс выбора лучшего кандидата из списка."
+    )
     candidates: List[PlayerReport] = Field(description="Список найденных и проанализированных игроков")
     final_recommendation: str = Field(description="Итоговый совет: кого из списка выбрать и почему")
 
@@ -100,7 +131,7 @@ llm = ChatOpenAI(
     temperature=0 
 )
 
-structured_llm = llm.with_structured_output(PlayerReport)
+structured_llm = llm.with_structured_output(ScoutProjectReport)
 
 system_instruction = f"""
 ### РОЛЬ
@@ -140,8 +171,11 @@ system_instruction = f"""
 ---
 
 ### ФОРМАТ ВЫХОДА
-Твой финальный ответ ДОЛЖЕН быть строго в формате JSON, соответствующем схеме:
-{json.dumps(PlayerReport.model_json_schema(), ensure_ascii=False)}
+Твой финальный ответ ДОЛЖЕН быть строго в формате JSON, соответствующем схеме ScoutProjectReport.
+Сначала заполни внутренние рассуждения (reasoning) для каждого игрока, затем логику сравнения, и только потом давай финальную рекомендацию.
+
+СХЕМА:
+{json.dumps(ScoutProjectReport.model_json_schema(), ensure_ascii=False)}
 """
 
 
