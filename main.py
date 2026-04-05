@@ -11,6 +11,7 @@ from langchain_core.callbacks import BaseCallbackHandler
 from pydantic import BaseModel, Field, AliasChoices
 from langchain.tools import tool
 from langgraph.checkpoint.memory import InMemorySaver
+from knowledge_base import fetch_scouting
 load_dotenv()
 checkpointer = InMemorySaver()
 
@@ -148,6 +149,7 @@ system_instruction = f"""
 
 
 ### АЛГОРИТМ ОБРАБОТКИ ЗАПРОСА
+0. **Методологическая подготовка**: ПРЕЖДЕ ЧЕМ искать статистику, всегда вызывай fetch_scouting. Передай туда название роли или тип анализа из запроса пользователя. Ты ДОЛЖЕН использовать полученные критерии (например, минимальный процент точности паса или количество обводок) для фильтрации кандидатов в финальном отчете.
 1. **Поиск по клубу/лиге:** Если пользователь ищет игрока в конкретной команде (например, "найди защитника из Барселоны"), СНАЧАЛА используй `search_team_id_tool`, чтобы получить ID клуба. Затем используй `get_team_player_stats_tool`, чтобы увидеть весь состав и их базовые метрики.
 2. **Поиск по характеристикам:** Если пользователь ищет по критериям (например, "правый вингер из Ла Лиги"), и клуб не указан:
    - На основе своих знаний выдели 3-5 наиболее подходящих кандидатов.
@@ -167,7 +169,7 @@ system_instruction = f"""
 2. СБОР ДАННЫХ: После получения ID используй его для вызова инструментов расширенной статистики или составов команд. Никогда не выдумывай статистику, используй только данные из ответов инструментов.
 3. АНАЛИЗ: На основе полученных цифр выдели ключевые показатели, соответствующие запросу пользователя (например, защитные действия, голы или общая форма).
 4. ОТЧЕТ: Сформируй краткий структурированный ответ, включающий конкретные цифры и итоговый аналитический вывод.
-
+5. ПРИОРИТЕТ МЕТОДОЛОГИИ: Твои выводы в поле reasoning и recommendation должны базироваться на сравнении реальных цифр из API с нормативами, полученными из fetch_scouting. Если игрок не дотягивает до клубного стандарта, ты обязан указать это в отчете.
 ---
 
 ### ФОРМАТ ВЫХОДА
@@ -180,7 +182,7 @@ system_instruction = f"""
 
 
 
-tools = [get_player_id_tool, get_player_stats_tool, get_player_full_scout_data_tool, search_team_id_tool, get_team_player_stats_tool]
+tools = [get_player_id_tool, get_player_stats_tool, get_player_full_scout_data_tool, search_team_id_tool, get_team_player_stats_tool, fetch_scouting]
 
 agent = create_agent(
     model=llm,
