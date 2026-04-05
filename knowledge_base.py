@@ -20,6 +20,9 @@ def get_vector_store():
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=100)
         all_splits = text_splitter.split_documents(docs)
         
+        for i, doc in enumerate(all_splits):
+            doc.metadata["id"] = f"doc_{i}"
+
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
         _vector_store = FAISS.from_documents(all_splits, embeddings)
@@ -36,3 +39,4 @@ def fetch_scouting(query: str):
     store = get_vector_store() 
     retrieved_docs = store.similarity_search(query, k=2)
     return "\n\n".join([doc.page_content for doc in retrieved_docs])
+
