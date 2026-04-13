@@ -1,12 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List
+from typing import List, Any, Dict
 import os
 import json
 import uuid
+import time
 from dotenv import load_dotenv
 import uvicorn
-from main import agent, structured_llm, PlayerReport, ScoutProjectReport
+from main import agent, structured_llm, PlayerReport, ScoutProjectReport, performance_tracker
 
 load_dotenv()
 
@@ -16,14 +17,22 @@ class ScoutRequest(BaseModel):
     """Запрос пользователя"""
     user_query: str
 
-
-
+class MetricsResponse(BaseModel):
+    llm_calls: int
+    total_prompt_tokens: int
+    total_completion_tokens: int
+    total_tokens: int
+    elapsed_time: float
 
 @app.post("/analyze-player", response_model=ScoutProjectReport)
 async def analyze(request: ScoutRequest):
+    performance_tracker.reset()
     try:
         session_id = str(uuid.uuid4())
-        config = {"configurable": {"thread_id": session_id}}
+        config = {
+            "configurable": {"thread_id": session_id},
+            "callbacks": [performance_tracker] 
+        }
         inputs = {"messages": [("user", request.user_query)]}
 
         result = agent.invoke(inputs, config=config)
@@ -43,7 +52,6 @@ async def analyze(request: ScoutRequest):
 
             data_dict = json.loads(clean_json)
             
-            
             if "player_id" in data_dict and "candidates" not in data_dict:
                 final_data = {
                     "user_request_context": request.user_query,
@@ -62,20 +70,19 @@ async def analyze(request: ScoutRequest):
 
         except Exception as json_err:
             print(f"Прямой парсинг не удался ({json_err}), пробуем через structured_llm...")
-            
             validated_report = structured_llm.invoke(raw_agent_text)
-            
             if not validated_report.user_request_context:
                 validated_report.user_request_context = request.user_query
-                
             return validated_report
 
     except Exception as e:
         print(f"Критическая ошибка в analyze: {e}")
         raise HTTPException(status_code=500, detail=str(e))
     
+@app.get("/metrics", response_model=MetricsResponse)
+async def get_metrics():
+    metrics = performance_tracker.get_metrics()
+    return MetricsResponse(**metrics)
+
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
-
-
-
