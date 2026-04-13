@@ -4,7 +4,7 @@ import json
 from typing import Optional, List, Dict, Any
 from dotenv import load_dotenv
 from langchain.agents import create_agent
-from api_client import get_player_id, get_player_stats, get_full_player_scout_data, search_team_id, get_team_player_stats
+from api_client import get_player_id, get_player_stats, get_full_player_scout_data, search_team_id, get_team_player_stats, search_tournament_id, get_tournament_seasons
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.callbacks import BaseCallbackHandler
@@ -76,7 +76,45 @@ class ScoutProjectReport(BaseModel):
     candidates: List[PlayerReport] = Field(description="Список найденных и проанализированных игроков")
     final_recommendation: str = Field(description="Итоговый совет: кого из списка выбрать и почему")
 
-@tool
+class PlayerIdTool(BaseModel):
+    name: str = Field(description="Имя футболиста для поиска на английском языке")
+class PlayerStatsInput(BaseModel):
+    player_id: int = Field(
+        description="Уникальный числовой ID футболиста, полученный из get_player_id_tool"
+    )
+
+class FullScoutData(BaseModel):
+    player_id: int = Field(description="Уникальный ID игрока")
+    season_year: str = Field(
+        default="25/26", 
+        description="Сезон в формате YY/YY. По умолчанию 25/26"
+    )
+
+class TeamIDTool(BaseModel):
+    query: str = Field(description="Название футбольного клуба для поиска его ID.")
+
+class TeamPlayerStatsTool(BaseModel):
+    team_id: int = Field(
+        description="Уникальный числовой ID команды"
+    )
+    tournament_id: Optional[int] = Field(None,
+        description="ID турнира."
+    )
+    season_id: int = Field(
+        description="ID сезона."
+    )
+
+class TournamentSearchInput(BaseModel):
+    query: str = Field(
+        description="Название лиги или турнира на английском (например, 'Bundesliga', 'Premier League', 'Champions League')."
+    )
+
+class SeasonsInput(BaseModel):
+    tournament_id: int = Field(
+        description="ID турнира (uniqueTournament ID), полученный из search_tournament_id_tool."
+    )
+
+@tool(args_schema=PlayerIdTool)
 def get_player_id_tool(name: str):
     """
     Находит уникальный числовой ID футболиста по его имени. 
@@ -84,7 +122,7 @@ def get_player_id_tool(name: str):
     """
     return get_player_id(name)
 
-@tool
+@tool(args_schema=PlayerStatsInput)
 def get_player_stats_tool(player_id: int):
     """
     Получает подробную футбольную статистику и историю матчей по ID игрока.
@@ -92,7 +130,7 @@ def get_player_stats_tool(player_id: int):
     """
     return get_player_stats(player_id)
 
-@tool
+@tool(args_schema=FullScoutData)
 def get_player_full_scout_data_tool(player_id: int, season_year: str = "25/26"):
     """
     Получает ПОЛНУЮ информацию об игроке: возраст, стоимость, позицию И все 
@@ -105,7 +143,7 @@ def get_player_full_scout_data_tool(player_id: int, season_year: str = "25/26"):
     """
     return get_full_player_scout_data(player_id, season_year=season_year)
 
-@tool
+@tool(args_schema=TeamIDTool)
 def search_team_id_tool(query: str):
     """
     Находит уникальный числовой ID футбольной команды по её названию (например, 'Barcelona', 'Real Madrid').
@@ -113,16 +151,31 @@ def search_team_id_tool(query: str):
     """
     return search_team_id(query)
 
-@tool
-def get_team_player_stats_tool(team_id: int, tournament_id: int = 8, season_id: int = 61643):
+@tool(args_schema=TournamentSearchInput)
+def search_tournament_id_tool(query: str):
+    """
+    Находит ID турнира по его названию. 
+    Используй это ПЕРЕД вызовом get_team_player_stats_tool, 
+    если не уверен в точном ID лиги.
+    """
+    return search_tournament_id(query)
+
+@tool(args_schema=SeasonsInput)
+def get_tournament_seasons_tool(tournament_id: int):
+    """
+    Возвращает список сезонов для турнира (например, '24/25', '25/26') и их системные ID.
+    Обязательно используй это, чтобы найти актуальный season_id ПЕРЕД вызовом статистики команды.
+    """
+    return get_tournament_seasons(tournament_id)
+
+@tool(args_schema=TeamPlayerStatsTool)
+def get_team_player_stats_tool(team_id: int, tournament_id: int, season_id: int):
     """
     Получает список ВСЕХ игроков команды и их краткую статистику за сезон.
     Используй это, чтобы отфильтровать футболистов по национальности, возрасту, позиции или 
     базовым показателям (голы, рейтинг), прежде чем делать глубокий анализ конкретного игрока.
-    По умолчанию: Ла Лига (8), Сезон 24/25 (61643).
     """
     return get_team_player_stats(team_id, tournament_id, season_id)
-
 
 
 llm = ChatOpenAI(
@@ -150,7 +203,10 @@ system_instruction = f"""
 
 ### АЛГОРИТМ ОБРАБОТКИ ЗАПРОСА
 0. **Методологическая подготовка**: ПРЕЖДЕ ЧЕМ искать статистику, всегда вызывай fetch_scouting. Передай туда название роли или тип анализа из запроса пользователя. Ты ДОЛЖЕН использовать полученные критерии (например, минимальный процент точности паса или количество обводок) для фильтрации кандидатов в финальном отчете.
-1. **Поиск по клубу/лиге:** Если пользователь ищет игрока в конкретной команде (например, "найди защитника из Барселоны"), СНАЧАЛА используй `search_team_id_tool`, чтобы получить ID клуба. Затем используй `get_team_player_stats_tool`, чтобы увидеть весь состав и их базовые метрики.
+1. **Поиск по клубу/лиге:** - Если в запросе есть название лиги, ты ОБЯЗАН сначала вызвать `search_tournament_id_tool`. Никогда не угадывай ID турнира.
+   - Затем ОБЯЗАТЕЛЬНО вызови `get_tournament_seasons_tool`, чтобы получить актуальный `season_id`. НИКОГДА не передавай просто год (например, 2025 или 2026) в качестве `season_id`.
+   - Если нужно найти игрока в конкретном клубе, используй `search_team_id_tool`. 
+   - Только имея на руках корректные ID команды, ID турнира И системный `season_id`, переходи к вызову `get_team_player_stats_tool`.
 2. **Поиск по характеристикам:** Если пользователь ищет по критериям (например, "правый вингер из Ла Лиги"), и клуб не указан:
    - На основе своих знаний выдели 3-5 наиболее подходящих кандидатов.
    - Для каждого используй `get_player_id_tool`.
@@ -170,6 +226,8 @@ system_instruction = f"""
 3. АНАЛИЗ: На основе полученных цифр выдели ключевые показатели, соответствующие запросу пользователя (например, защитные действия, голы или общая форма).
 4. ОТЧЕТ: Сформируй краткий структурированный ответ, включающий конкретные цифры и итоговый аналитический вывод.
 5. ПРИОРИТЕТ МЕТОДОЛОГИИ: Твои выводы в поле reasoning и recommendation должны базироваться на сравнении реальных цифр из API с нормативами, полученными из fetch_scouting. Если игрок не дотягивает до клубного стандарта, ты обязан указать это в отчете.
+6. ПРОВЕРКА КОНТЕКСТА: Если данные из API (например, список игроков команды) кажутся устаревшими или не соответствуют реальности (игрок уже перешел в другой клуб), используй поиск по имени игрока `get_player_id_tool`, чтобы получить его актуальный профиль, прежде чем делать выводы.
+7. ЖЕСТКАЯ ПРОВЕРКА КЛУБА: Когда ты получаешь подробные данные через `get_player_full_scout_data_tool`, СТРОГО проверяй поле `club` внутри `profile`. Если текущий клуб игрока в ответе API отличается от клуба, который запросил пользователь (например, игрок уже перешел в другую команду), НЕМЕДЛЕННО исключай его из списка кандидатов.
 ---
 
 ### ФОРМАТ ВЫХОДА
@@ -182,7 +240,7 @@ system_instruction = f"""
 
 
 
-tools = [get_player_id_tool, get_player_stats_tool, get_player_full_scout_data_tool, search_team_id_tool, get_team_player_stats_tool, fetch_scouting]
+tools = [get_player_id_tool, get_player_stats_tool, get_player_full_scout_data_tool, search_team_id_tool, get_team_player_stats_tool, fetch_scouting, search_tournament_id_tool, get_tournament_seasons_tool]
 
 agent = create_agent(
     model=llm,
@@ -207,10 +265,16 @@ logger = logging.getLogger("TalentLens-AI")
 
 class ScoutPerformanceTracker(BaseCallbackHandler):
     def __init__(self, warning_threshold: int = 4):
-        self.llm_calls = 0
-        self.start_time = 0
-        self.call_start_time = 0
         self.warning_threshold = warning_threshold
+        self.reset()
+
+    def reset(self):
+        self.llm_calls = 0
+        self.start_time = time.time()
+        self.call_start_time = 0
+        self.total_prompt_tokens = 0
+        self.total_completion_tokens = 0
+        self.total_tokens = 0
 
     def on_llm_start(self, serialized, prompts, **kwargs):
         self.llm_calls += 1
@@ -224,6 +288,9 @@ class ScoutPerformanceTracker(BaseCallbackHandler):
         prompt_tokens = usage.get("prompt_tokens", 0)
         completion_tokens = usage.get("completion_tokens", 0)
         total_tokens = usage.get("total_tokens", 0)
+        self.total_prompt_tokens += prompt_tokens
+        self.total_completion_tokens += completion_tokens
+        self.total_tokens += total_tokens
         logger.info(f"Latency: {latency:.2f} sec")
         logger.info(f"Tokens: In: {prompt_tokens} | Out: {completion_tokens} | Total: {total_tokens}")
 
@@ -237,10 +304,15 @@ class ScoutPerformanceTracker(BaseCallbackHandler):
         logger.info(f"[Tool Output] Инструмент вернул данные:")
         logger.info(output) 
         logger.info("-" * 30)
+    def get_metrics(self):
+        return {
+            "llm_calls": self.llm_calls,
+            "total_prompt_tokens": self.total_prompt_tokens,
+            "total_completion_tokens": self.total_completion_tokens,
+            "total_tokens": self.total_tokens,
+            "elapsed_time": time.time() - self.start_time
+        }
 
-    def reset(self):
-        self.llm_calls = 0
-        self.start_time = time.time()
 
 performance_tracker = ScoutPerformanceTracker()
 

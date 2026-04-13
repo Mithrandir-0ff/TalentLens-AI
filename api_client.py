@@ -2,12 +2,31 @@ import requests
 import os
 from dotenv import load_dotenv
 from datetime import datetime
-
+from typing import List, Dict
 load_dotenv()
 
 API_KEY = os.getenv("RAPIDAPI_KEY")
 
 API_HOST = "sofascore.p.rapidapi.com"
+
+
+
+
+
+def calculate_age(timestamp):
+    if not timestamp:
+        return None
+    
+    try:
+        if timestamp > 10000000000:
+            timestamp = timestamp / 1000
+        
+        birth_year = datetime.fromtimestamp(timestamp).year
+        current_year = datetime.now().year
+        
+        return current_year - birth_year
+    except Exception as e:
+        return None
 
 def get_player_id(player_name: str):
     
@@ -265,40 +284,155 @@ def search_team_id(query: str):
         return f"Error searching team: {e}"
 
 def get_team_player_stats(team_id: int, tournament_id: int, season_id: int):
-    url = f"https://{API_HOST}/teams/get-player-statistics"
-    querystring = {
-        "teamId": str(team_id),
-        "tournamentId": str(tournament_id),
-        "seasonId": str(season_id),
-        "type": "overall"
-    }
 
+    
+    url_stats = f"https://{API_HOST}/teams/get-player-statistics"
+    url_squad = f"https://{API_HOST}/teams/get-squad"
+    
     headers = {
-         "x-rapidapi-key": API_KEY,
-           "x-rapidapi-host": API_HOST,
+        "x-rapidapi-key": API_KEY,
+        "x-rapidapi-host": API_HOST,
         "Content-Type": "application/json"
     }
+    
+    players_dict = {}
+    
     try:
-        response = requests.get(url, headers=headers, params=querystring)
-        response.raise_for_status()
-        
-        data = response.json() 
-        
-        slim_data = []
-        
-        for p in data.get('players', []):
-            player_info = {
-                "id": p.get('player', {}).get('id'),
-                "name": p.get('player', {}).get('name'),
-                "position": p.get('player', {}).get('position'),
-                "age": p.get('player', {}).get('age'),
-                "rating": p.get('statistics', {}).get('rating'),
-                "nationality": p.get('player', {}).get('country', {}).get('name')
+        response_stats = requests.get(
+            url_stats,
+            headers=headers,
+            params={
+                "teamId": str(team_id),
+                "tournamentId": str(tournament_id),
+                "seasonId": str(season_id),
+                "type": "overall"
             }
-            slim_data.append(player_info)
+        )
         
-        return slim_data[:30] 
-
+        if response_stats.status_code == 200:
+            data_stats = response_stats.json()
+            top_players = data_stats.get('topPlayers', {})
+            
+            for category, players_list in top_players.items():
+                if isinstance(players_list, list):
+                    for player_obj in players_list:
+                        player = player_obj.get('player', {})
+                        stats = player_obj.get('statistics', {})
+                        player_id = player.get('id')
+                        
+                        if player_id and player_id not in players_dict:
+                            players_dict[player_id] = {
+                                "id": player_id,
+                                "name": player.get('name'),
+                                "position": player.get('position'),
+                                "age": None,  
+                                "rating": stats.get('rating'),
+                                "nationality": player.get('country', {}).get('name'),
+                                "appearances": stats.get('appearances'),
+                                "goals": stats.get('goals', 0),
+                                "assists": stats.get('assists', 0)
+                            }
+        
+        response_squad = requests.get(
+            url_squad,
+            headers=headers,
+            params={"teamId": str(team_id)}
+        )
+        
+        if response_squad.status_code == 200:
+            squad_data = response_squad.json()
+            squad_players = squad_data.get('players', [])
+            
+            for player_obj in squad_players:
+                player = player_obj.get('player', {})
+                player_id = player.get('id')
+                birth_ts = player.get('dateOfBirthTimestamp')
+                
+                if player_id in players_dict:
+                    players_dict[player_id]['age'] = calculate_age(birth_ts)
+                    if not players_dict[player_id].get('nationality'):
+                        players_dict[player_id]['nationality'] = player.get('country', {}).get('name')
+                
+                elif player_id:
+                    players_dict[player_id] = {
+                        "id": player_id,
+                        "name": player.get('name'),
+                        "position": player.get('position'),
+                        "age": calculate_age(birth_ts),
+                        "rating": None,
+                        "nationality": player.get('country', {}).get('name'),
+                        "appearances": None,
+                        "jersey": player.get('jerseyNumber')
+                    }
+        
+        result = list(players_dict.values())
+        result.sort(key=lambda x: x.get('rating') or 0, reverse=True)
+        
+        return result[:30]
+        
     except Exception as e:
         return f"Error fetching team stats: {e}"
 
+def search_tournament_id(query: str) -> List[Dict]:
+    url = "https://sofascore.p.rapidapi.com/tournaments/search"
+    
+    querystring = {"name": query}
+    
+    headers = {
+        "x-rapidapi-key": API_KEY, 
+        "x-rapidapi-host": API_HOST,
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.get(url, headers=headers, params=querystring)
+        response.raise_for_status()
+        data = response.json()
+        
+        tournaments = []
+        unique_tournaments = data.get("uniqueTournaments", [])
+        
+        for ut in unique_tournaments:
+            tournaments.append({
+                "name": ut.get("name"),
+                "id": ut.get("id"),
+                "category": ut.get("category", {}).get("name"),
+                "current_season_id": ut.get("unqiueTournamentSeasonId") 
+            })
+        
+        query_lower = query.lower()
+        results = [t for t in tournaments if query_lower in t["name"].lower()]
+        
+        return results if results else "No tournaments found for this query."
+        
+    except Exception as e:
+        return f"Error fetching tournaments: {str(e)}"
+
+
+def get_tournament_seasons(tournament_id: int) -> List[Dict]:
+
+    url = f"https://sofascore.p.rapidapi.com/tournaments/get-seasons"
+    querystring = {"tournamentId": str(tournament_id)}
+
+    headers = {
+        "x-rapidapi-key": API_KEY,
+        "x-rapidapi-host": API_HOST
+    }
+
+    try:
+        response = requests.get(url, headers=headers, params=querystring)
+        response.raise_for_status()
+        data = response.json()
+        
+        seasons = []
+        for s in data.get("seasons", []):
+            seasons.append({
+                "season_id": s.get("id"),
+                "year": s.get("year"),
+                "name": s.get("name")
+            })
+        
+        return seasons if seasons else "No seasons found for this tournament."
+        
+    except Exception as e:
+        return f"Error fetching seasons: {str(e)}"
