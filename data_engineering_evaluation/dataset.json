@@ -1,0 +1,1781 @@
+{
+  "meta": {
+    "total": 106,
+    "duplicates_removed": 8,
+    "scenarios": {
+      "player_analysis": 25,
+      "criteria_search": 32,
+      "club_search": 25,
+      "stats_search": 20,
+      "comparison": 12
+    }
+  },
+  "examples": [
+    {
+      "id": 1,
+      "query": "Analyze Safonov for the 25/26 season",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Goalkeeper",
+      "league": "Ligue 1",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 2,
+      "query": "Provide a full analysis of player Alvarez",
+      "scenario": "player_analysis",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 3,
+      "query": "Give a scouting report for player Bastoni",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Serie A",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 4,
+      "query": "Evaluate the form and statistics of Pedri for 24/25",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 5,
+      "query": "Evaluate the form and statistics of Ryerson for 24/25",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Bundesliga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 6,
+      "query": "Provide a full analysis of player Saliba",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 7,
+      "query": "Give a scouting report for player Vitinha",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "Ligue 1",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 8,
+      "query": "Give a scouting report for player Saliba",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 9,
+      "query": "Provide a full analysis of player Modric",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 11,
+      "query": "Provide a full analysis of player Bruno Fernandes",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "Premier League",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 12,
+      "query": "Analyze Bruno Fernandes for the 24/25 season",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "Premier League",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 13,
+      "query": "Provide a full analysis of player Karl",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "Bundesliga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 14,
+      "query": "Analyze Modric for the 24/25 season",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 15,
+      "query": "Give a scouting report for player Ryerson",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Defender",
+      "league": "Bundesliga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 16,
+      "query": "Evaluate the form and statistics of Yamal for 24/25",
+      "scenario": "player_analysis",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 17,
+      "query": "Analyze Haaland for the 25/26 season",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Forward",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 18,
+      "query": "Provide a full analysis of player Safonov",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "Ligue 1",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 19,
+      "query": "Provide a full analysis of player Alisson",
+      "scenario": "player_analysis",
+      "complexity": "simple",
+      "position": "Goalkeeper",
+      "league": "Premier League",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 20,
+      "query": "Give a scouting report for player Ngumoha",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Forward",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 21,
+      "query": "Analyze Ryerson for the 24/25 season",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Bundesliga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 22,
+      "query": "Give a scouting report for player Caicedo",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 23,
+      "query": "Analyze Mainoo for the 24/25 season",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 24,
+      "query": "Provide a full analysis of player Senesi",
+      "scenario": "player_analysis",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 25,
+      "query": "Give a scouting report for player Kane",
+      "scenario": "player_analysis",
+      "complexity": "complex",
+      "position": "Forward",
+      "league": "Bundesliga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 26,
+      "query": "Find an experienced Forward from Serie A",
+      "scenario": "criteria_search",
+      "complexity": "medium",
+      "position": "Forward",
+      "league": "Serie A",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 27,
+      "query": "Find an experienced Goalkeeper from Serie A",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "Serie A",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 28,
+      "query": "Find the best Goalkeeper from La Liga",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 29,
+      "query": "Recommend a Midfielder for transfer from Serie A",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 30,
+      "query": "Find a young Forward under 23 from Bundesliga",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "Bundesliga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 31,
+      "query": "Find the best Defender from Bundesliga",
+      "scenario": "criteria_search",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Bundesliga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 32,
+      "query": "Recommend a Defender for transfer from Ligue 1",
+      "scenario": "criteria_search",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Ligue 1",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 33,
+      "query": "Recommend a Forward for transfer from Serie A",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "Serie A",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 34,
+      "query": "Recommend a Goalkeeper for transfer from Premier League",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "Premier League",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 35,
+      "query": "Recommend a Goalkeeper for transfer from Ligue 1",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Goalkeeper",
+      "league": "Ligue 1",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 36,
+      "query": "Recommend a Defender for transfer from Premier League",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 37,
+      "query": "Find a young Midfielder under 23 from Serie A",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "Serie A",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 39,
+      "query": "Find a young Forward under 23 from La Liga",
+      "scenario": "criteria_search",
+      "complexity": "medium",
+      "position": "Forward",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 40,
+      "query": "Find a young Goalkeeper under 23 from Premier League",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 41,
+      "query": "Find an experienced Goalkeeper from Ligue 1",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "Ligue 1",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 44,
+      "query": "Find an experienced Defender from La Liga",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 45,
+      "query": "Find a young Midfielder under 23 from Bundesliga",
+      "scenario": "criteria_search",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "Bundesliga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 46,
+      "query": "Find an experienced Forward from Premier League",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 47,
+      "query": "Find the best Midfielder from Premier League",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 48,
+      "query": "Find the best Midfielder from La Liga",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 49,
+      "query": "Find a young Defender under 23 from Serie A",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "Serie A",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 51,
+      "query": "Find an experienced Forward from La Liga",
+      "scenario": "criteria_search",
+      "complexity": "medium",
+      "position": "Forward",
+      "league": "La Liga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 52,
+      "query": "Find an experienced Goalkeeper from Bundesliga",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Goalkeeper",
+      "league": "Bundesliga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 53,
+      "query": "Find the best Defender from Premier League",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 55,
+      "query": "Recommend a Defender for transfer from Serie A",
+      "scenario": "criteria_search",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "Serie A",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 56,
+      "query": "Find a young Forward under 23 from Premier League",
+      "scenario": "criteria_search",
+      "complexity": "complex",
+      "position": "Forward",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 58,
+      "query": "Find the strongest Midfielder in Manchester United squad",
+      "scenario": "club_search",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 59,
+      "query": "Find the strongest Forward in Atletico Madrid squad",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "La Liga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 60,
+      "query": "Find the strongest Forward in Juventus squad",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "Serie A",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 61,
+      "query": "Recommend a Midfielder from AC Milan for transfer",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 62,
+      "query": "Evaluate the best Forward from Juventus",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 63,
+      "query": "Evaluate the best Forward from Atletico Madrid",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Forward",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 64,
+      "query": "Find the strongest Defender in Manchester United squad",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 65,
+      "query": "Find the strongest Defender in AC Milan squad",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 66,
+      "query": "Find the strongest Goalkeeper in Juventus squad",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "Serie A",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 67,
+      "query": "Recommend a Midfielder from Borussia Dortmund for transfer",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "Bundesliga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 68,
+      "query": "Recommend a Midfielder from Atletico Madrid for transfer",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 69,
+      "query": "Who is the best Defender at Bayern Munich?",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Defender",
+      "league": "Bundesliga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 70,
+      "query": "Recommend a Goalkeeper from PSG for transfer",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "Ligue 1",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 71,
+      "query": "Who is the best Goalkeeper at Juventus?",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Goalkeeper",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 73,
+      "query": "Evaluate the best Forward from Napoli",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Forward",
+      "league": "Serie A",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 74,
+      "query": "Find the strongest Goalkeeper in Atletico Madrid squad",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "La Liga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 75,
+      "query": "Who is the best Defender at Arsenal?",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 76,
+      "query": "Recommend a Forward from Arsenal for transfer",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 77,
+      "query": "Who is the best Midfielder at Real Madrid?",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 78,
+      "query": "Who is the best Midfielder at Atletico Madrid?",
+      "scenario": "club_search",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 79,
+      "query": "Evaluate the best Midfielder from Liverpool",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 80,
+      "query": "Recommend a Defender from Marsellie for transfer",
+      "scenario": "club_search",
+      "complexity": "complex",
+      "position": "Defender",
+      "league": "Ligue 1",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 81,
+      "query": "Evaluate the best Defender from Inter Milan",
+      "scenario": "club_search",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "Serie A",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 82,
+      "query": "Who is the best Midfielder at Napoli?",
+      "scenario": "club_search",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "Serie A",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_team_id_tool",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 83,
+      "query": "Find a Defender in Serie A showing rating above 7.5 per season",
+      "scenario": "stats_search",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Serie A",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 84,
+      "query": "Find a Defender from La Liga with rating above 7.5 per season",
+      "scenario": "stats_search",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "La Liga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 85,
+      "query": "Recommend a Defender from Premier League who has more than 10 goals per season",
+      "scenario": "stats_search",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 86,
+      "query": "Recommend a Goalkeeper from Premier League who has more than 9 assists per season",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Goalkeeper",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 87,
+      "query": "Find a Midfielder from La Liga with more than 100 tackles per season",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 88,
+      "query": "Find a Defender from Premier League with more than 3 set-piece goals",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 89,
+      "query": "Find a Defender from La Liga with xG above 8 per season",
+      "scenario": "stats_search",
+      "complexity": "complex",
+      "position": "Defender",
+      "league": "La Liga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 90,
+      "query": "Find a Goalkeeper in La Liga showing xG above 8 per season",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Goalkeeper",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 91,
+      "query": "Find a Goalkeeper from La Liga with more than 10 goals per season",
+      "scenario": "stats_search",
+      "complexity": "complex",
+      "position": "Goalkeeper",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 92,
+      "query": "Recommend a Defender from La Liga who has xG above 8 per season",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 93,
+      "query": "Recommend a Forward from Ligue 1 who has more than 3 set-piece goals",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "Ligue 1",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 94,
+      "query": "Recommend a Midfielder from Serie A who has more than 3 set-piece goals",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "Serie A",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 95,
+      "query": "Find a Midfielder in La Liga showing rating above 7.5 per season",
+      "scenario": "stats_search",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "La Liga",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 96,
+      "query": "Recommend a Midfielder from Bundesliga who has more than 3 set-piece goals",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "Bundesliga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 97,
+      "query": "Find a Midfielder in Ligue 1 showing more than 10 goals per season",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "Ligue 1",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 98,
+      "query": "Find a Midfielder in Bundesliga showing xG above 8 per season",
+      "scenario": "stats_search",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "Bundesliga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 99,
+      "query": "Find a Forward from Serie A with more than 10 goals per season",
+      "scenario": "stats_search",
+      "complexity": "medium",
+      "position": "Forward",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 100,
+      "query": "Find a Defender in Serie A showing xG above 8 per season",
+      "scenario": "stats_search",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 101,
+      "query": "Recommend a Goalkeeper from La Liga who has more than 10 goals per season",
+      "scenario": "stats_search",
+      "complexity": "simple",
+      "position": "Goalkeeper",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 102,
+      "query": "Find a Midfielder from Ligue 1 with xG above 8 per season",
+      "scenario": "stats_search",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "Ligue 1",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "search_tournament_id_tool",
+        "get_tournament_seasons_tool",
+        "get_team_player_stats_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 103,
+      "query": "Compare Saliba with Senesi as a Defender",
+      "scenario": "comparison",
+      "complexity": "simple",
+      "position": "Defender",
+      "league": "Premier League",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 104,
+      "query": "Compare Alvarez and Ngumoha from La Liga",
+      "scenario": "comparison",
+      "complexity": "simple",
+      "position": "Forward",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 105,
+      "query": "Compare Alvarez and Yamal from La Liga",
+      "scenario": "comparison",
+      "complexity": "medium",
+      "position": "Forward",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 106,
+      "query": "Compare Modric with Vitinha as a Midfielder",
+      "scenario": "comparison",
+      "complexity": "medium",
+      "position": "Midfielder",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 107,
+      "query": "Compare Pedri and Fermin from La Liga",
+      "scenario": "comparison",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "La Liga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 108,
+      "query": "Compare Bruno Fernandes with Karl as a Midfielder",
+      "scenario": "comparison",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "Premier League",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 109,
+      "query": "Compare Ryerson with Saliba as a Defender",
+      "scenario": "comparison",
+      "complexity": "medium",
+      "position": "Defender",
+      "league": "Bundesliga",
+      "age_group": "mid",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 110,
+      "query": "Compare Modric and Bruno Fernandes from Serie A",
+      "scenario": "comparison",
+      "complexity": "complex",
+      "position": "Midfielder",
+      "league": "Serie A",
+      "age_group": "experienced",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 111,
+      "query": "Compare Karl with Mainoo as a Midfielder",
+      "scenario": "comparison",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "Bundesliga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 112,
+      "query": "Compare Yamal and Alvarez from La Liga",
+      "scenario": "comparison",
+      "complexity": "medium",
+      "position": "Forward",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 113,
+      "query": "Compare Cubarsi and Saliba from La Liga",
+      "scenario": "comparison",
+      "complexity": "complex",
+      "position": "Defender",
+      "league": "La Liga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    },
+    {
+      "id": 114,
+      "query": "Compare Karl with Caicedo as a Midfielder",
+      "scenario": "comparison",
+      "complexity": "simple",
+      "position": "Midfielder",
+      "league": "Bundesliga",
+      "age_group": "youth",
+      "expected_tools": [
+        "fetch_scouting",
+        "get_player_id_tool",
+        "get_player_full_scout_data_tool",
+        "get_player_full_scout_data_tool"
+      ],
+      "is_valid": true
+    }
+  ]
+}
