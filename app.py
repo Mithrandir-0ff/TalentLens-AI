@@ -7,7 +7,7 @@ import uuid
 import time
 from dotenv import load_dotenv
 import uvicorn
-from main import agent, structured_llm, PlayerReport, ScoutProjectReport, performance_tracker
+from main import agent, structured_llm, PlayerReport, ScoutProjectReport, performance_tracker, langfuse_handler
 
 load_dotenv()
 
@@ -27,11 +27,12 @@ class MetricsResponse(BaseModel):
 @app.post("/analyze-player", response_model=ScoutProjectReport)
 async def analyze(request: ScoutRequest):
     performance_tracker.reset()
+    raw_agent_text = None
     try:
         session_id = str(uuid.uuid4())
         config = {
             "configurable": {"thread_id": session_id},
-            "callbacks": [performance_tracker] 
+            "callbacks": [performance_tracker, langfuse_handler] 
         }
         inputs = {"messages": [("user", request.user_query)]}
 
@@ -66,18 +67,44 @@ async def analyze(request: ScoutRequest):
                 return ScoutProjectReport(**data_dict)
             
             else:
-                raise ValueError("JSON валиден, но структура не подходит под PlayerReport или ScoutProjectReport")
+                raise ValueError("JSON валиден, но структура не подходит")
 
         except Exception as json_err:
-            print(f"Прямой парсинг не удался ({json_err}), пробуем через structured_llm...")
-            validated_report = structured_llm.invoke(raw_agent_text)
-            if not validated_report.user_request_context:
-                validated_report.user_request_context = request.user_query
-            return validated_report
+            print(f"Ошибка парсинга JSON: {json_err}")
+            raise HTTPException(status_code=500, detail="Ошибка обработки ответа модели")
 
     except Exception as e:
+        error_text = str(e).lower()
+
         print(f"Критическая ошибка в analyze: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+
+        if (
+            "402" in error_text
+            or "budget" in error_text
+            or "payment required" in error_text
+            or "exceeded" in error_text
+        ):
+            raise HTTPException(
+                status_code=402,
+                detail="Дневной лимит LiteLLM исчерпан"
+            )
+
+        if raw_agent_text:
+            try:
+                validated_report = structured_llm.invoke(raw_agent_text)
+
+                if not validated_report.user_request_context:
+                    validated_report.user_request_context = request.user_query
+
+                return validated_report
+
+            except Exception:
+                pass
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
     
 @app.get("/metrics", response_model=MetricsResponse)
 async def get_metrics():

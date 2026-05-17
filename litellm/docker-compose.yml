@@ -1,0 +1,147 @@
+services:
+  litellm:
+    image: docker.litellm.ai/berriai/litellm:main-stable
+    container_name: litellm
+
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml
+
+    command:
+      - "--config=/app/config.yaml"
+
+    ports:
+      - "4000:4000"
+
+    environment:
+      DATABASE_URL: postgresql://llmproxy:dbpassword9090@db:5432/litellm
+      STORE_MODEL_IN_DB: "True"
+      LITELLM_MASTER_KEY: sk-master-1234
+
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY}
+      LANGFUSE_HOST: http://langfuse:3000
+
+      HAPPYHUB_API_KEY: ${HAPPYHUB_API_KEY}
+
+    env_file:
+      - .env
+
+    depends_on:
+      - db
+      - langfuse
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveliness')\""
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: postgres:16
+    container_name: litellm_db
+    restart: always
+
+    environment:
+      POSTGRES_DB: litellm
+      POSTGRES_USER: llmproxy
+      POSTGRES_PASSWORD: dbpassword9090
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d litellm -U llmproxy"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  langfuse-db:
+    image: postgres:16
+    container_name: langfuse_db
+    restart: always
+
+    environment:
+      POSTGRES_USER: langfuse
+      POSTGRES_PASSWORD: langfuse
+      POSTGRES_DB: langfuse
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - langfuse_postgres_data:/var/lib/postgresql/data
+
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    container_name: clickhouse
+    restart: always
+
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+
+    environment:
+      CLICKHOUSE_DB: default
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: clickhouse
+
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+
+    ports:
+      - "6379:6379"
+
+  langfuse:
+    image: langfuse/langfuse:2
+    container_name: langfuse
+    restart: always
+
+    depends_on:
+      - langfuse-db
+      - clickhouse
+      - redis
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      DATABASE_URL: postgresql://langfuse:langfuse@langfuse-db:5432/langfuse
+
+      NEXTAUTH_SECRET: supersecret
+      SALT: supersalt
+
+      NEXTAUTH_URL: http://localhost:3000
+
+      TELEMETRY_ENABLED: "false"
+
+      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: "true"
+
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_MIGRATION_URL: clickhouse://clickhouse:9000
+
+      CLICKHOUSE_USER: clickhouse
+      CLICKHOUSE_PASSWORD: clickhouse
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+volumes:
+  postgres_data:
+    name: litellm_postgres_data
+
+  langfuse_postgres_data:
+
+  clickhouse_data:

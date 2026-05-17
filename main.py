@@ -1,19 +1,30 @@
 
 import os
+
 import json
 from typing import Optional, List, Dict, Any
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 from api_client import get_player_id, get_player_stats, get_full_player_scout_data, search_team_id, get_team_player_stats, search_tournament_id, get_tournament_seasons
 from langchain_openai import ChatOpenAI
+
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.callbacks import BaseCallbackHandler
 from pydantic import BaseModel, Field, AliasChoices
 from langchain.tools import tool
 from langgraph.checkpoint.memory import InMemorySaver
+from langfuse import get_client
+from langfuse.langchain import CallbackHandler
 from knowledge_base import fetch_scouting
+
 load_dotenv()
+
+
+
 checkpointer = InMemorySaver()
+
+langfuse = get_client()
+langfuse_handler = CallbackHandler()
 
 class PlayerReasoning(BaseModel):
     needed_stats: str = Field(
@@ -181,9 +192,17 @@ def get_team_player_stats_tool(team_id: int, tournament_id: int, season_id: int)
 llm = ChatOpenAI(
     openai_api_key=os.getenv("OPENAI_API_KEY"),
     model="gpt-oss-120b",
-    base_url="https://litellm.happyhub.ovh/v1",
-    temperature=0 
+    base_url="http://127.0.0.1:4000/v1",
+    temperature=0
 )
+
+
+# llm = ChatOpenAI(
+#     model="gpt-oss-120b",
+#     client=custom_client,
+#     temperature=0,
+# )
+
 
 structured_llm = llm.with_structured_output(ScoutProjectReport)
 
