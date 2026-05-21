@@ -7,7 +7,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.tools import tool
-
+from pydantic import BaseModel, Field
 load_dotenv()
 
 _vector_store = None
@@ -28,12 +28,15 @@ def get_vector_store():
         _vector_store = FAISS.from_documents(all_splits, embeddings)
     return _vector_store
 
-@tool
+class FetchScoutingInput(BaseModel):
+    query: str = Field(description="Тип анализа или роль игрока")
+
+@tool(args_schema=FetchScoutingInput)
 def fetch_scouting(query: str):
     """
     ОБЯЗАТЕЛЬНЫЙ ИНСТРУМЕНТ для начала любого анализа. 
     Используй его ПЕРЕД вызовом статистических инструментов, чтобы получить 
-    внутренние стандарты клуба, пороговые значения метрик (thresholds) 
+    внутренние стандарты модели, пороговые значения метрик (thresholds) 
     и специфические требования к тактическим ролям (например, Inverted Winger, False 9). 
     """
     store = get_vector_store() 

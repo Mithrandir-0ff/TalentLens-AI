@@ -16,7 +16,9 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langfuse import get_client
 from langfuse.langchain import CallbackHandler
 from knowledge_base import fetch_scouting
-
+from langgraph.graph import StateGraph, MessagesState, END
+from langgraph.types import Command
+from langchain_core.messages import AIMessage
 load_dotenv()
 
 
@@ -25,6 +27,16 @@ checkpointer = InMemorySaver()
 
 langfuse = get_client()
 langfuse_handler = CallbackHandler()
+
+OFF_TOPIC_RESPONSE = """
+Извините, но система TalentLens-AI предназначена исключительно для скаутингов задач и анализа футболистов и их статистик. 
+Система не предоставляет информации по вашему запросу, пожалуйста сформулируйте вопрос в рамках футбольной аналитики.
+"""
+
+class RouterDecision(BaseModel):
+    is_football_related: bool = Field(
+        description="True если запрос связан с скаутской работой и футбольной аналитикой, False если не связан"
+    )
 
 class PlayerReasoning(BaseModel):
     needed_stats: str = Field(
@@ -205,7 +217,7 @@ llm = ChatOpenAI(
 
 
 structured_llm = llm.with_structured_output(ScoutProjectReport)
-
+router_llm = llm.with_structured_output(RouterDecision)
 system_instruction = f"""
 ### РОЛЬ
 Ты — ведущий элитный AI-скаут системы TalentLens-AI. 
@@ -257,6 +269,44 @@ system_instruction = f"""
 {json.dumps(ScoutProjectReport.model_json_schema(), ensure_ascii=False)}
 """
 
+ROUTER_SYSTEM_PROMPT = """
+Ты маршрутизатор системы TalentLens-AI.
+
+Твоя задача определить связан ли запрос пользователя с:
+- футболом
+- футбольным скаутингом
+- футбольными трансферами
+- футбольной статистикой
+- анализом футболистов
+- тактическими футбольными вопросами
+- футбольными клубами
+- футбольными турнирами
+
+Если запрос НЕ связан с футбольной аналитикой - верни False.
+"""
+
+def off_topic_node(state: MessagesState):
+    return {
+        "messages": [
+            AIMessage(content=OFF_TOPIC_RESPONSE)
+        ]
+    }
+
+def route_query(state: MessagesState) -> Command:
+    last_message = state["messages"][-1].content
+    decision = router_llm.invoke(
+        [
+            ("system", ROUTER_SYSTEM_PROMPT),
+            ("user", last_message)
+        ]
+    )
+    if decision.is_football_related:
+        return Command(goto="agent")
+    else:
+        return Command(goto="off_topic")
+    
+
+
 
 
 tools = [get_player_id_tool, get_player_stats_tool, get_player_full_scout_data_tool, search_team_id_tool, get_team_player_stats_tool, fetch_scouting, search_tournament_id_tool, get_tournament_seasons_tool]
@@ -267,6 +317,19 @@ agent = create_agent(
     tools=tools,
     checkpointer=checkpointer
 )
+
+graph = StateGraph(MessagesState)
+
+graph.add_node("route_query", route_query)
+graph.add_node("agent", agent)
+graph.add_node("off_topic", off_topic_node)
+
+graph.set_entry_point("route_query")
+
+graph.add_edge("agent", END)
+graph.add_edge("off_topic", END)
+
+final_graph = graph.compile(checkpointer=checkpointer)
 
     
 import logging

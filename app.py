@@ -1,12 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Union
 import os
 import json
 import uuid
+from main import OFF_TOPIC_RESPONSE
 import time
 from dotenv import load_dotenv
 import uvicorn
+from main import final_graph
 from main import agent, structured_llm, PlayerReport, ScoutProjectReport, performance_tracker, langfuse_handler
 
 load_dotenv()
@@ -17,6 +19,9 @@ class ScoutRequest(BaseModel):
     """Запрос пользователя"""
     user_query: str
 
+class OffTopicResponse(BaseModel):
+    message: str
+
 class MetricsResponse(BaseModel):
     llm_calls: int
     total_prompt_tokens: int
@@ -24,7 +29,7 @@ class MetricsResponse(BaseModel):
     total_tokens: int
     elapsed_time: float
 
-@app.post("/analyze-player", response_model=ScoutProjectReport)
+@app.post("/analyze-player", response_model=Union[ScoutProjectReport, OffTopicResponse])
 async def analyze(request: ScoutRequest):
     performance_tracker.reset()
     raw_agent_text = None
@@ -36,9 +41,15 @@ async def analyze(request: ScoutRequest):
         }
         inputs = {"messages": [("user", request.user_query)]}
 
-        result = agent.invoke(inputs, config=config)
+        result = final_graph.invoke(inputs, config=config)
         raw_agent_text = result["messages"][-1].content
         
+        if raw_agent_text.strip() == OFF_TOPIC_RESPONSE.strip():
+            return OffTopicResponse(
+                message=OFF_TOPIC_RESPONSE
+            )
+
+
         print(f"DEBUG: Агент выдал текст: {raw_agent_text}")
 
         if not raw_agent_text:
