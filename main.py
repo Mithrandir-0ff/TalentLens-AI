@@ -20,7 +20,8 @@ from langgraph.graph import StateGraph, MessagesState, END
 from langgraph.types import Command
 from langchain_core.messages import AIMessage
 load_dotenv()
-
+print(f"MAIN.PY LITELLM_URL: {os.getenv('LITELLM_BASE_URL')}")
+print(f"MAIN.PY LITELLM_KEY: {os.getenv('LITELLM_MASTER_KEY')}")
 
 
 checkpointer = InMemorySaver()
@@ -202,9 +203,9 @@ def get_team_player_stats_tool(team_id: int, tournament_id: int, season_id: int)
 
 
 llm = ChatOpenAI(
-    openai_api_key=os.getenv("OPENAI_API_KEY"),
+    openai_api_key=os.getenv("LITELLM_MASTER_KEY"),
     model="gpt-oss-120b",
-    base_url="http://127.0.0.1:4000/v1",
+    base_url=os.getenv("LITELLM_BASE_URL", "http://127.0.0.1:4000/v1"),
     temperature=0
 )
 

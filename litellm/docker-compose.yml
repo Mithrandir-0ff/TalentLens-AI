@@ -41,6 +41,37 @@ services:
       retries: 3
       start_period: 40s
 
+  talentelens-api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: talentelens-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../.env
+    environment:
+      - LITELLM_BASE_URL=http://litellm:4000/v1
+      - LITELLM_MASTER_KEY=sk-master-1234
+    depends_on:
+      - litellm
+      - langfuse
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    ports:
+      - "3001:8080"
+    environment:
+      - WEBUI_AUTH=False
+      - HF_HUB_OFFLINE=1
+      - OPENAI_API_BASE_URL=http://talentelens-api:8000/v1
+      - OPENAI_API_KEY=dummy
+    volumes:
+      - open-webui:/app/backend/data
+    depends_on:
+      - talentelens-api
+
   db:
     image: postgres:16
     container_name: litellm_db
@@ -145,3 +176,5 @@ volumes:
   langfuse_postgres_data:
 
   clickhouse_data:
+
+  open-webui:

@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.git
+.gitignore
+*.log
+*.csv
+*.xlsx
+*.json
+data_engineering_evaluation/
+industrial_deployment/
+litellm/
