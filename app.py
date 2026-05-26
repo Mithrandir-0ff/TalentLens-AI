@@ -8,6 +8,8 @@ from main import OFF_TOPIC_RESPONSE
 import time
 from dotenv import load_dotenv
 import uvicorn
+from service import get_service
+from api_schema.schemas import RunRequest, RunResponse, InfoResponse
 from main import final_graph
 from main import agent, structured_llm, PlayerReport, ScoutProjectReport, performance_tracker, langfuse_handler
 
@@ -242,6 +244,21 @@ async def get_models():
             }
         ]
     }
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+
+@app.get("/info", response_model=InfoResponse)
+async def info():
+    return get_service().get_info()
+
+
+@app.post("/run", response_model=RunResponse)
+async def run(request: RunRequest):
+    return get_service().run(request)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
