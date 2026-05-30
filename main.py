@@ -20,8 +20,6 @@ from langgraph.graph import StateGraph, MessagesState, END
 from langgraph.types import Command
 from langchain_core.messages import AIMessage
 load_dotenv()
-print(f"MAIN.PY LITELLM_URL: {os.getenv('LITELLM_BASE_URL')}")
-print(f"MAIN.PY LITELLM_KEY: {os.getenv('LITELLM_MASTER_KEY')}")
 
 
 checkpointer = InMemorySaver()
@@ -101,7 +99,7 @@ class ScoutProjectReport(BaseModel):
     final_recommendation: str = Field(description="Итоговый совет: кого из списка выбрать и почему")
 
 class PlayerIdTool(BaseModel):
-    name: str = Field(description="Имя футболиста для поиска на английском языке")
+    name: str = Field(description="Имя футболиста для поиска на английском языке. ВАЖНО: Если имя введено на русском (например, 'Ламин Ямаль'), или любом другом языке, кроме английского, ты ОБЯЗАН транслитерировать или перевести его на английский язык перед отправкой.")
 class PlayerStatsInput(BaseModel):
     player_id: int = Field(
         description="Уникальный числовой ID футболиста, полученный из get_player_id_tool"
@@ -232,6 +230,10 @@ system_instruction = f"""
 
 ---
 
+### ПЕРЕВОД И ТРАНСЛИТЕРАЦИЯ
+1. Если пользователь отправляет запрос и указывает имя/фамилию игрока на русском языке (например, "Ламин Ямаль", "Рафинья", "Головин"), либо любом другом, ты ОБЯЗАН в первую очередь перевести или транслитерировать имя/фамилию на английский язык (например: "Lamine Yamal", "Raphinha", "Aleksandr Golovin").
+2. В аргумент `query` инструмента поиска передавай имя ИСКЛЮЧИТЕЛЬНО на английском языке. Не отправляй в поиск кириллицу.
+---
 
 ### АЛГОРИТМ ОБРАБОТКИ ЗАПРОСА
 0. **Методологическая подготовка**: ПРЕЖДЕ ЧЕМ искать статистику, всегда вызывай fetch_scouting. Передай туда название роли или тип анализа из запроса пользователя. Ты ДОЛЖЕН использовать полученные критерии (например, минимальный процент точности паса или количество обводок) для фильтрации кандидатов в финальном отчете.
