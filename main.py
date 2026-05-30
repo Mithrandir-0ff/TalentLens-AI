@@ -20,8 +20,6 @@ from langgraph.graph import StateGraph, MessagesState, END
 from langgraph.types import Command
 from langchain_core.messages import AIMessage
 load_dotenv()
-print(f"MAIN.PY LITELLM_URL: {os.getenv('LITELLM_BASE_URL')}")
-print(f"MAIN.PY LITELLM_KEY: {os.getenv('LITELLM_MASTER_KEY')}")
 
 
 checkpointer = InMemorySaver()

@@ -39,8 +39,7 @@ class ChatCompletionRequest(BaseModel):
     model: str = "talentlens-ai"
     messages: List[ChatMessage]
     stream: bool = False
-print(f"DEBUG LITELLM_KEY: {os.getenv('LITELLM_MASTER_KEY')}")
-print(f"DEBUG LITELLM_URL: {os.getenv('LITELLM_BASE_URL')}")
+
 
 def transform_scout_output_to_text(raw_output: Any) -> str:
     if isinstance(raw_output, str):
