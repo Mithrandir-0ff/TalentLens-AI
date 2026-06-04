@@ -186,7 +186,7 @@ services:
 
   squid:
     build:
-      context: ./squid
+      context: ../squid
     container_name: squid
     ports:
       - "3128:3128"
